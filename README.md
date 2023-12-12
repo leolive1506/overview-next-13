@@ -10,3 +10,53 @@
 
 # Template vs Layout
 - template recarrega a cada troca de página enquanto layout é estático
+
+# Requisição
+- agora é feito pelo proprio componente, transformando ele em async 
+- por padrão, todos componentes serão servier-side first
+- as requisição são geradas estáticas pelo lado do servidor
+  - revalidate
+    - para pagina toda criar
+      ```tsx
+      import Link from "next/link";
+      // tempo revalidar em segundos
+      export const revalidate = 30
+
+      export default async function Home() {
+        const response = await fetch('http://api.github.com/users/leolive1506')
+        const user = await response.json()
+      }
+      ```
+    - por requisição
+      ```tsx
+      const response = await fetch('http://api.github.com/users/leolive1506', {
+        next: {
+          revalidate: 30
+        }
+      })
+      ```
+    - requisições dinamicas
+      ```tsx
+      const response = await fetch('http://api.github.com/users/leolive1506', {
+        // padrão que força que a resposta sempre seja cacheada
+        cache: 'force-cache'
+        // não armazena em cache de uma maneira global para todos usuários (SSR)
+        cache: 'no-store'
+      })
+      ```
+
+# Request waterfall (Cascata de requisições)
+- componente que faz chamada http e dentro tem outro componente que também faz outra chamada http
+
+## Como evitar 
+- executa todas ao mesmo tempo a menos que uma dependa da responsta de outra (identifica automáticamente)
+- quando um não depender do outro, pode executar as duas ao mesmo tempo com
+```ts
+const [res1, res2] = await Promise.all(
+  fetch(''),
+  fetch(''),
+)
+```
+
+# Deduplicação automática
+- evitar duplicação de req http
