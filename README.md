@@ -60,3 +60,16 @@ const [res1, res2] = await Promise.all(
 
 # Deduplicação automática
 - evitar duplicação de req http
+
+# Roteamento next
+- useRouter agr vem de 'next/navigation' (antes 'next/router')
+
+# Prefetch de páginas
+- faz automaticamente
+- por padrão os links que aparecem na tela são pré-carregados
+- pode forçar carregamento usando useRouter()
+
+# Cliente side components
+- qualquer hook que armazene estado ou precise de informações, apis do navegador (useState, useEffect, window) é preciso especificar como componente como 'use client'
+- quando componente é 'use client' ele não pode async
+  - as requisições devem ser feitos da forma clássica
